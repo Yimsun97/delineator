@@ -9,7 +9,7 @@ on how to download the input data.
 """
 
 # Path to your CSV file with the watershed outlet data
-OUTLETS_CSV = 'outlets_sample.csv'
+OUTLETS_CSV = 'my_outlets.csv'
 
 # Set to True for "high-resolution" mode or False for "low-resolution."
 HIGH_RES = True
@@ -17,10 +17,10 @@ HIGH_RES = True
 # Directory containing the MERIT basin-scale flow direction rasters (.tif).
 # Download from 
 # For all paths, do not include a trailing slash.
-MERIT_FDIR_DIR =  "data/raster/flowdir_basins"
+MERIT_FDIR_DIR =  r"D:\Files\Data\Rivers\MERIT-Hydro\flow_dir_basins"
 
 # Directory containing the MERIT the flow accumulation rasters (.tif files).
-MERIT_ACCUM_DIR = "data/raster/accum_basins"
+MERIT_ACCUM_DIR = r"D:\Files\Data\Rivers\MERIT-Hydro\accum_basins"
 
 # Set to True if you want the script to write status messages to the console
 VERBOSE = True
@@ -30,17 +30,17 @@ VERBOSE = True
 PLOTS = False
 
 # Folder where you have stored the Merit-BASINS catchment shapefiles.
-HIGHRES_CATCHMENTS_DIR = "data/shp/merit_catchments"
+HIGHRES_CATCHMENTS_DIR = r"D:\Files\Data\Rivers\MERIT-Basins\pfaf_level_02"
 
 # Folder where you have stored the MERIT-Basins rivers shapefiles
-RIVERS_DIR = "data/shp/merit_rivers"
+RIVERS_DIR = r"D:\Files\Data\Rivers\MERIT-Basins\pfaf_level_02"
 
 # Location of simplified catchment boundaries. Download the files from
 # https://mghydro.org/watersheds/share/catchments_simplified.zip
 LOWRES_CATCHMENTS_DIR = "data/shp/catchments_simplified"
 
 # Folder where the script will write the output GeoJSON files or shapefiles
-OUTPUT_DIR = "output"
+OUTPUT_DIR = "results/output"
 
 # The file extension will determine the types of files the script creates.
 # "geojson" for GeoJSON files (recommended) or "shp" for shapefiles
@@ -79,7 +79,7 @@ MAKE_MAP = True
 
 # Folder where the script should put the map files.
 # The mapping routine will make _viewer.html and .js files for every watershed
-MAP_FOLDER = "map"
+MAP_FOLDER = "results/map"
 
 # On the map, do you also want to include the rivers?
 MAP_RIVERS = True
@@ -99,5 +99,3 @@ AREA_MATCHING_THRESHOLD = 0.35
 # If you set MATCH_AREAS = True, how far away from the original outlet point should the script look 
 # for a river reach that is a better match in terms of upstream area?
 MAX_DIST = 0.15
-
-from config_change import *

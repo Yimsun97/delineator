@@ -405,7 +405,7 @@ def delineate():
         else:
             catchments_dir = LOWRES_CATCHMENTS_DIR
 
-        catchments_shp = "{}/cat_pfaf_{}_MERIT_Hydro_v07_Basins_v01.shp".format(catchments_dir, basin)
+        catchments_shp = "{}/cat_pfaf_{}_MERIT_Hydro_v07_Basins_v01_bugfix1.shp".format(catchments_dir, basin)
 
         if not os.path.isfile(catchments_shp):
             raise Exception("Could not find the catchments file: {}".format(catchments_shp))
@@ -419,7 +419,7 @@ def delineate():
         # The network data is in the RIVERS file rather than the CATCHMENTS file
         # (this is just how the MeritBASIS authors did it)
         print('Reading data table for rivers in basin %s' % basin)
-        rivers_filename = "{}/riv_pfaf_{}_MERIT_Hydro_v07_Basins_v01.dbf".format(RIVERS_DIR, basin)
+        rivers_filename = "{}/riv_pfaf_{}_MERIT_Hydro_v07_Basins_v01_bugfix1.dbf".format(RIVERS_DIR, basin)
         if not os.path.isfile(rivers_filename):
             raise Exception("Could not find the rivers file: {}".format(rivers_filename))
         rivers_gdf = gpd.read_file(rivers_filename)
@@ -500,8 +500,7 @@ def delineate():
                 bool_high_res = False
                 # If we just flipped to low-res mode, check if the low-res unit catchment polygons are loaded.
                 if catchments_lowres_gdf is None:
-                    catchments_shp = "{}/cat_pfaf_{}_MERIT_Hydro_v07_Basins_v01.shp".format(LOWRES_CATCHMENTS_DIR,
-                                                                                            basin)
+                    catchments_shp = "{}/cat_pfaf_{}_MERIT_Hydro_v07_Basins_v01_bugfix1.shp".format(LOWRES_CATCHMENTS_DIR, basin)
                     if not os.path.isfile(catchments_shp):
                         raise Exception("Could not find the catchments file: {}".format(catchments_shp))
                     print("Reading catchment geodata in {}".format(catchments_shp))
