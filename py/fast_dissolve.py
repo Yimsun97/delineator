@@ -17,8 +17,10 @@ with my watershed boundaries.
 
 """
 
+import pandas as pd
 import geopandas as gpd
-from shapely.geometry import Polygon
+from shapely.geometry import Polygon, MultiPolygon
+
 gpd.options.use_pygeos = True
 
 
@@ -86,7 +88,7 @@ def dissolve_geopandas(df):
     It creates a box around the polygons, then clips the box to
     that poly. The result is one feature instead of many.
     """
-    
+
     [left, bottom, right, top] = df.total_bounds
     left -= 1
     right += 1
@@ -96,7 +98,6 @@ def dissolve_geopandas(df):
     lat_point_list = [left, right, right, left, left]
     lon_point_list = [top, top, bottom, bottom, top]
 
-
     polygon_geom = Polygon(zip(lat_point_list, lon_point_list))
     rect = gpd.GeoDataFrame(index=[0], crs=df.crs, geometry=[polygon_geom])
     clipped = gpd.clip(rect, df)
@@ -105,5 +106,19 @@ def dissolve_geopandas(df):
 
     clipped = clipped.geometry.apply(lambda p: buffer(p))
 
-    return clipped
-    
+    clipped_ = clipped.copy()
+    # convert to multiple Polygon if clipped is a multipolygon
+    for i in clipped.index:
+        if isinstance(clipped.loc[i], MultiPolygon):
+            clipped_explode = gpd.GeoDataFrame(
+                geometry=gpd.GeoSeries(clipped.loc[i])
+            ).explode()
+            clipped_ = gpd.GeoSeries(
+                pd.concat(
+                    [clipped.loc[(i + 1):],
+                     clipped_explode.reset_index().loc[:, 'geometry']],
+                    axis=0, ignore_index=True
+                )
+            )
+
+    return clipped_

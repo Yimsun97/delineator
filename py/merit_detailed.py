@@ -121,13 +121,15 @@ def get_subdivided_merit_polygon(wid: str, basin: int, lat: float, lng: float, c
     hexpoly = catchment_poly.wkb_hex
     poly = wkb.loads(hexpoly, hex=True)
 
-    # Fix any holes in the polygon by taking the exterior coordinates.
-    # One of the annoyances of working with GeoPandas and pysheds is that you have
-    # to constantly switch back and forth between Polygons and MultiPolygons...
-    filled_poly = Polygon(poly.exterior.coords)
-
-    # It needs to be of type MultiPolygon to work with rasterio apparently
-    multi_poly = MultiPolygon([filled_poly])
+    if isinstance(poly, Polygon):
+        # Fix any holes in the polygon by taking the exterior coordinates.
+        # One of the annoyances of working with GeoPandas and pysheds is that you have
+        # to constantly switch back and forth between Polygons and MultiPolygons...
+        filled_poly = Polygon(poly.exterior.coords)
+        # It needs to be of type MultiPolygon to work with rasterio apparently
+        multi_poly = MultiPolygon([filled_poly])
+    else:
+        multi_poly = poly
 
     # Convert the polygon into a pixelized raster mask.
     mymask = grid.rasterize(multi_poly)
