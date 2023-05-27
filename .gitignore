@@ -5,3 +5,4 @@ py/__pycache__/
 map/*
 output/*
 plots/*
+results/*

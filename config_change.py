@@ -17,10 +17,15 @@ HIGH_RES = True
 # Directory containing the MERIT basin-scale flow direction rasters (.tif).
 # Download from 
 # For all paths, do not include a trailing slash.
-MERIT_FDIR_DIR =  r"D:\Files\Data\Rivers\MERIT-Hydro\flow_dir_basins"
+MERIT_FDIR_DIR =  r"E:\Data\Rivers\MERIT-Hydro\flow_dir_basins"
 
 # Directory containing the MERIT the flow accumulation rasters (.tif files).
-MERIT_ACCUM_DIR = r"D:\Files\Data\Rivers\MERIT-Hydro\accum_basins"
+MERIT_ACCUM_DIR = r"E:\Data\Rivers\MERIT-Hydro\accum_basins"
+
+# Directory containing the MERIT level 2 regions (.shp files).
+MERIT_REGION_DIR = r"E:\Data\Rivers\BasinDelineator\delineator\data\shp\basins_level2\merit_hydro_vect_level2.shp"
+MERIT_REGION_DIR_NO_BUFFER = r"E:\Data\Rivers\BasinDelineator\delineator\data\shp\basins_level2\merit_hydro_vect_level2.shp"
+MERIT_REGION_DIR_BUFFER = r"E:\Data\Rivers\BasinDelineator\delineator\data\shp\basins_level2\merit_hydro_vect_level2_buffered.shp"
 
 # Set to True if you want the script to write status messages to the console
 VERBOSE = True
@@ -30,14 +35,14 @@ VERBOSE = True
 PLOTS = False
 
 # Folder where you have stored the Merit-BASINS catchment shapefiles.
-HIGHRES_CATCHMENTS_DIR = r"D:\Files\Data\Rivers\MERIT-Basins\pfaf_level_02"
+HIGHRES_CATCHMENTS_DIR = r"E:\Data\Rivers\MERIT-Basins\pfaf_level_02"
 
 # Folder where you have stored the MERIT-Basins rivers shapefiles
-RIVERS_DIR = r"D:\Files\Data\Rivers\MERIT-Basins\pfaf_level_02"
+RIVERS_DIR = r"E:\Data\Rivers\MERIT-Basins\pfaf_level_02"
 
 # Location of simplified catchment boundaries. Download the files from
 # https://mghydro.org/watersheds/share/catchments_simplified.zip
-LOWRES_CATCHMENTS_DIR = "data/shp/catchments_simplified"
+LOWRES_CATCHMENTS_DIR = "E:\Data\Rivers\MERIT-Hydro\catchments_simplified"
 
 # Folder where the script will write the output GeoJSON files or shapefiles
 OUTPUT_DIR = "results/output"
@@ -53,7 +58,7 @@ OUTPUT_CSV = True
 
 # Threshold for watershed size in km² above which the script will revert to
 # low-resolution mode 
-LOW_RES_THRESHOLD = 50000
+LOW_RES_THRESHOLD = 5e10    # 5e4
 
 # If the requested watershed outlet is not inside a catchment, how far away 
 # from the point should we look for the nearest catchment (in degrees)
@@ -68,7 +73,7 @@ FILL = True
 FILL_THRESHOLD = 0
 
 # Simplify the watershed boundary? This will remove some vertices from the watershed boundary and output smaller files. 
-SIMPLIFY = False
+SIMPLIFY = True
 
 # If SIMPLIFY is True, set SIMPLIFY_TOLERANCE to a value in decimal degrees. Note that the vector polygons
 SIMPLIFY_TOLERANCE = 0.0008

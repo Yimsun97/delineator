@@ -332,7 +332,8 @@ def delineate():
 
     if VERBOSE: print("Finding out which Level 2 megabasin(s) your points are in")
     # This file has the merged basins in it
-    merit_basins_shp = 'data/shp/basins_level2/merit_hydro_vect_level2.shp'
+    # merit_basins_shp = 'data/shp/basins_level2/merit_hydro_vect_level2.shp'
+    merit_basins_shp = MERIT_REGION_DIR
     megabasins = gpd.read_file(merit_basins_shp)
     # The CRS string in the shapefile is EPSG 4326 but does not match verbatim
     megabasins.to_crs(crs, inplace=True)
@@ -495,20 +496,25 @@ def delineate():
 
             # If the watershed is too big, revert to low-precision mode.
             if HIGH_RES and up_area > LOW_RES_THRESHOLD:
-                if VERBOSE: print("Watershed for id = {} is larger than LOW_RES_THRESHOLD = {}. "
-                                  "SWITCHING TO LOW-RESOLUTION MODE.".format(wid, LOW_RES_THRESHOLD))
-                bool_high_res = False
-                # If we just flipped to low-res mode, check if the low-res unit catchment polygons are loaded.
-                if catchments_lowres_gdf is None:
-                    catchments_shp = "{}/cat_pfaf_{}_MERIT_Hydro_v07_Basins_v01_bugfix1.shp".format(LOWRES_CATCHMENTS_DIR, basin)
-                    if not os.path.isfile(catchments_shp):
-                        raise Exception("Could not find the catchments file: {}".format(catchments_shp))
-                    print("Reading catchment geodata in {}".format(catchments_shp))
-                    catchments_lowres_gdf = gpd.read_file(catchments_shp)
-                    catchments_lowres_gdf.set_index('COMID', inplace=True)
-                    catchments_lowres_gdf.to_crs(crs, inplace=True)
+                try:
+                    if VERBOSE: print("Watershed for id = {} is larger than LOW_RES_THRESHOLD = {}. "
+                                    "SWITCHING TO LOW-RESOLUTION MODE.".format(wid, LOW_RES_THRESHOLD))
+                    bool_high_res = False
+                    # If we just flipped to low-res mode, check if the low-res unit catchment polygons are loaded.
+                    if catchments_lowres_gdf is None:
+                        catchments_shp = "{}/cat_pfaf_{}_MERIT_Hydro_v07_Basins_v01.shp".format(LOWRES_CATCHMENTS_DIR, basin)
+                        if not os.path.isfile(catchments_shp):
+                            raise Exception("Could not find the catchments file: {}".format(catchments_shp))
+                        print("Reading catchment geodata in {}".format(catchments_shp))
+                        catchments_lowres_gdf = gpd.read_file(catchments_shp)
+                        catchments_lowres_gdf.set_index('COMID', inplace=True)
+                        catchments_lowres_gdf.to_crs(crs, inplace=True)
 
-                subbasins_gdf = catchments_lowres_gdf.loc[B]
+                    subbasins_gdf = catchments_lowres_gdf.loc[B]
+                except KeyError:
+                    print("Low resolution mode KeyError. Fall back to high resolution mode.")
+                    bool_high_res = True
+                    subbasins_gdf = catchments_gdf.loc[B]
             else:
                 # Create a new geodataframe containing only the unit catchments_gdf that are in the list B
                 # In high precision mode, we will update the geometry of the terminal unit catchment.
@@ -657,11 +663,44 @@ def delineate():
     # If the user wants the browser map, make it
     if MAKE_MAP:
         if VERBOSE: print("* Creating viewer.html *")
-        make_map(gages_df)
+        make_map(gages_df, TEMPLATE_PATH, MAP_FOLDER)
 
     # Finished, print a little status message
     if VERBOSE: print("It's over! See results in {}".format(output_csv_filename))
 
 
 if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--path', help='Specify the path of delineate.py', required=False)
+    parser.add_argument('--point', help='Specify a point file', required=False)
+    parser.add_argument('--output', help='Specify a output path', required=False)
+    parser.add_argument('--buffer', help='Specify whether using buffered basins', required=False,
+                        type=lambda x: (str(x).lower() in ['true', '1', 'yes']))
+    args = parser.parse_args()
+    
+    if not args.path:
+        TEMPLATE_PATH = './py/'
+    else:
+        TEMPLATE_PATH = f'{args.path}/py/'
+    
+    if args.point:
+        OUTLETS_CSV = args.point
+    if args.output:
+        OUTPUT_DIR = f"{args.output}/output"
+        MAP_FOLDER = f"{args.output}/map"
+        print(MAP_FOLDER)
+        if not os.path.exists(args.output):
+            os.mkdir(args.output)
+    if args.buffer is not None:
+        if args.buffer:
+            MERIT_REGION_DIR = MERIT_REGION_DIR_BUFFER
+        else:
+            MERIT_REGION_DIR = MERIT_REGION_DIR_NO_BUFFER
+    
+    if not os.path.exists(OUTPUT_DIR):
+        os.mkdir(OUTPUT_DIR)
+    if not os.path.exists(MAP_FOLDER):
+        os.mkdir(MAP_FOLDER)
+    
     delineate()

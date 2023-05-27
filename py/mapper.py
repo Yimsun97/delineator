@@ -4,10 +4,9 @@ using a bit of javascript and Leaflet.
 """
 
 from jinja2 import Template
-from config import MAP_FOLDER
 
 
-def make_map(df):
+def make_map(df, template_path, map_folder):
     """
 
     input:
@@ -48,7 +47,7 @@ def make_map(df):
     df = df[df.result != 'failed']
 
     # Use a jinja template to create the html file
-    template_file = "py/viewer_template.html"
+    template_file = f"{template_path}/viewer_template.html"
     with open(template_file, 'r') as f:
         template_str = f.read()
 
@@ -78,7 +77,7 @@ def make_map(df):
         cols=columns
     )
 
-    viewer_fname = "{}/_viewer.html".format(MAP_FOLDER)
+    viewer_fname = "{}/_viewer.html".format(map_folder)
     f = open(viewer_fname, 'w')
     f.write(html)
     f.close()
