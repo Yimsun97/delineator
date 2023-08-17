@@ -480,7 +480,8 @@ def delineate():
                         failed[wid] = "Could not find a nearby river reach whose upstream area is " \
                                       "within {}% of reported area of {:,.0f} km²"\
                                       .format(AREA_MATCHING_THRESHOLD * 100, area_reported)
-                        continue
+                        # continue
+                        up_area = 0
                     else:
                         terminal_comid = candidate_comid
 
@@ -597,7 +598,10 @@ def delineate():
             if bAreas:
                 area_reported = gages_df.loc[wid].area_reported
                 mybasin_gdf['area_reported'] = area_reported
-                perc_diff = sigfig.round((up_area - area_reported) / area_reported * 100, 2)
+                if np.isnan(area_reported):
+                    perc_diff = np.nan
+                else:
+                    perc_diff = sigfig.round((up_area - area_reported) / area_reported * 100, 2)
                 gages_df.at[wid, 'perc_diff'] = perc_diff
 
             # SAVE the Watershed to disk as a GeoJSON file or a shapefile

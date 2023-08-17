@@ -216,7 +216,7 @@ def get_subdivided_merit_polygon(wid: str, basin: int, lat: float, lng: float, c
     # The values here work OK, but I did not test very extensively...
     # A value of 300 prevents the app from finding little tiny watersheds. Not our purpose.
     if bSingleCatchment:
-        numpixels = 500
+        numpixels = 300
     else:
         # Case where there are 2 or more unit catchments in the watershed
         # setting this value too low causes incorrect results and weird topology problems in the output

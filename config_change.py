@@ -103,4 +103,4 @@ AREA_MATCHING_THRESHOLD = 0.35
 
 # If you set MATCH_AREAS = True, how far away from the original outlet point should the script look 
 # for a river reach that is a better match in terms of upstream area?
-MAX_DIST = 0.15
+MAX_DIST = 0.02
